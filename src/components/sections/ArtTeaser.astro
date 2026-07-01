@@ -1,0 +1,155 @@
+---
+import { getCollection } from 'astro:content';
+
+const artEntries = await getCollection('art', ({ data }) => data.featured);
+const sorted = artEntries.sort((a, b) => a.data.order - b.data.order);
+const preview = sorted.slice(0, 6);
+---
+
+<section class="art-teaser section-spacing" aria-labelledby="art-heading">
+  <div class="art-inner">
+    <div class="section-header">
+      <h2 id="art-heading" class="section-heading">Art</h2>
+      <a href="/art" class="view-all" aria-label="View all artwork">
+        View all →
+      </a>
+    </div>
+
+    <div class="art-grid">
+      {preview.map(item => {
+        const imgSrc = `/images/art/${item.data.image}`;
+        return (
+          <a
+            href="/art"
+            class="art-card"
+            aria-label={`${item.data.title} — ${item.data.medium}`}
+          >
+            <img
+              src={imgSrc}
+              alt={item.data.title}
+              loading="lazy"
+              width="400"
+              height="400"
+              class="art-thumb"
+            />
+            <div class="art-info">
+              <span class="art-title">{item.data.title}</span>
+              <span class="art-medium">{item.data.medium}</span>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .art-teaser {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .art-inner {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+  }
+
+  .section-heading {
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .view-all {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-default);
+  }
+
+  .view-all:hover {
+    color: var(--color-text-primary);
+  }
+
+  .art-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .art-card {
+    display: block;
+    position: relative;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    aspect-ratio: 1;
+    text-decoration: none;
+    transition: border-color var(--duration-default);
+  }
+
+  .art-card:hover {
+    border-color: var(--color-text-muted);
+  }
+
+  .art-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity var(--duration-default);
+  }
+
+  .art-card:hover .art-thumb {
+    opacity: 0.85;
+  }
+
+  .art-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 0.75rem 0.75rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity var(--duration-default);
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .art-card:hover .art-info {
+    opacity: 1;
+  }
+
+  .art-title {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: rgba(255,255,255,0.95);
+  }
+
+  .art-medium {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: rgba(255,255,255,0.6);
+    text-transform: capitalize;
+  }
+
+  @media (max-width: 640px) {
+    .art-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

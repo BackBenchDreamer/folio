@@ -1,0 +1,389 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { siteConfig } from '@/config/site.config';
+
+interface Props {
+  title: string;
+  description?: string;
+  date: Date;
+  tags?: string[];
+  readingTime?: number;
+  ogImage?: string;
+  rawContent?: string;
+}
+
+const {
+  title,
+  description,
+  date,
+  tags = [],
+  readingTime,
+  ogImage,
+  rawContent = '',
+} = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  <!-- Reading progress bar (CSS scroll-driven, no JS) -->
+  <div class="reading-progress" aria-hidden="true"></div>
+
+  <article class="blog-article" data-pagefind-body>
+    <div class="blog-layout">
+      <!-- Article header -->
+      <header class="article-header">
+        <div class="article-meta">
+          <time datetime={date.toISOString()} class="meta-date">
+            {formattedDate}
+          </time>
+          {readingTime && (
+            <span class="meta-sep" aria-hidden="true">·</span>
+            <span class="meta-reading-time">{readingTime} min read</span>
+          )}
+        </div>
+
+        <h1 class="article-title">{title}</h1>
+
+        {description && (
+          <p class="article-description">{description}</p>
+        )}
+
+        {tags.length > 0 && (
+          <ul class="article-tags" role="list">
+            {tags.map(tag => (
+              <li>
+                <span class="tag">{tag}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <!-- Action buttons -->
+        <div class="article-actions">
+          {siteConfig.features.readingMode && (
+            <button
+              id="reading-mode-toggle"
+              class="action-btn"
+              type="button"
+              aria-label="Toggle reading mode"
+            >
+              Reading mode
+            </button>
+          )}
+          {siteConfig.features.copyMarkdown && rawContent && (
+            <button
+              id="copy-markdown-btn"
+              class="action-btn"
+              type="button"
+              aria-label="Copy post as Markdown"
+              data-raw={rawContent}
+            >
+              Copy Markdown
+            </button>
+          )}
+        </div>
+      </header>
+
+      <!-- Post body -->
+      <div class="prose">
+        <slot />
+      </div>
+
+      <!-- Back link -->
+      <nav class="article-nav" aria-label="Post navigation">
+        <a href="/blog" class="back-link">← All posts</a>
+      </nav>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  /* Scroll-driven reading progress bar */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-accent);
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 100;
+
+    /* CSS scroll-driven animation — zero JS */
+    animation: reading-progress linear;
+    animation-timeline: scroll(root block);
+  }
+
+  @keyframes reading-progress {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  /* Fallback for browsers without scroll-driven animations */
+  @supports not (animation-timeline: scroll()) {
+    .reading-progress {
+      display: none;
+    }
+  }
+
+  .blog-article {
+    padding: 4rem 1.5rem;
+  }
+
+  .blog-layout {
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  .article-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .meta-sep {
+    color: var(--color-border);
+  }
+
+  .article-title {
+    font-size: clamp(var(--text-2xl), 5vw, var(--text-4xl));
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: var(--leading-tight);
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .article-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-bottom: 1.5rem;
+  }
+
+  .article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    list-style: none;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2em 0.6em;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+  }
+
+  .article-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: color var(--duration-default), border-color var(--duration-default);
+  }
+
+  .action-btn:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-muted);
+  }
+
+  /* Prose styles */
+  .prose {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  .prose :global(h1),
+  .prose :global(h2),
+  .prose :global(h3),
+  .prose :global(h4) {
+    color: var(--color-text-primary);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: var(--leading-tight);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose :global(h2) { font-size: var(--text-xl); }
+  .prose :global(h3) { font-size: var(--text-lg); }
+
+  .prose :global(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .prose :global(a) {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border);
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--duration-default);
+  }
+
+  .prose :global(a:hover) {
+    text-decoration-color: var(--color-text-secondary);
+  }
+
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background-color: var(--color-code-bg);
+    border: 1px solid var(--color-code-border);
+    border-radius: var(--radius-sm);
+    padding: 0.1em 0.35em;
+  }
+
+  .prose :global(pre) {
+    background-color: var(--color-surface) !important;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: var(--text-sm);
+  }
+
+  .prose :global(blockquote) {
+    border-left: 2px solid var(--color-border);
+    padding-left: 1rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin: 1.5rem 0;
+  }
+
+  .prose :global(hr) {
+    border-color: var(--color-border);
+    margin: 2.5rem 0;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 0.375rem;
+  }
+
+  .prose :global(img) {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  /* Reading mode */
+  :global(body[data-reading-mode='true']) .blog-layout {
+    max-width: 52rem;
+  }
+
+  :global(body[data-reading-mode='true']) .article-title {
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-5xl));
+  }
+
+  :global(body[data-reading-mode='true']) .prose {
+    font-size: var(--text-lg);
+    line-height: 1.85;
+  }
+
+  .article-nav {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .back-link {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-default);
+  }
+
+  .back-link:hover {
+    color: var(--color-text-primary);
+  }
+</style>
+
+{siteConfig.features.readingMode && (
+  <script>
+    (function () {
+      const btn = document.getElementById('reading-mode-toggle');
+      if (!btn) return;
+
+      function updateLabel() {
+        const active = document.body.dataset.readingMode === 'true';
+        if (btn) btn.textContent = active ? 'Exit reading' : 'Reading mode';
+      }
+
+      btn.addEventListener('click', () => {
+        const current = document.body.dataset.readingMode === 'true';
+        document.body.dataset.readingMode = String(!current);
+        updateLabel();
+      });
+
+      updateLabel();
+    })();
+  </script>
+)}
+
+{siteConfig.features.copyMarkdown && (
+  <script>
+    (function () {
+      const btn = document.getElementById('copy-markdown-btn');
+      if (!btn) return;
+
+      btn.addEventListener('click', async () => {
+        const raw = btn.dataset.raw ?? '';
+        // Strip MDX-specific component syntax so clipboard has clean Markdown
+        const clean = raw.replace(/<[A-Z][^>]*\/?>/g, '').replace(/<\/[A-Z][^>]*>/g, '');
+        try {
+          await navigator.clipboard.writeText(clean);
+          const original = btn.textContent;
+          btn.textContent = 'Copied ✓';
+          setTimeout(() => { btn.textContent = original; }, 2000);
+        } catch {}
+      });
+    })();
+  </script>
+)}

@@ -1,0 +1,228 @@
+---
+/**
+ * KeyboardShortcuts.astro
+ * - Press ? to open the shortcuts panel
+ * - Press t to toggle theme
+ * - Press / to focus search
+ * - Press Escape to close any overlay
+ * Gated by siteConfig.features.keyboardShortcuts.
+ */
+import { siteConfig } from '@/config/site.config';
+
+const shortcuts = [
+  { key: '?',      description: 'Open keyboard shortcuts' },
+  { key: 't',      description: 'Toggle theme' },
+  { key: '/',      description: 'Focus search' },
+  { key: 'Esc',    description: 'Close overlay / dismiss' },
+];
+---
+
+{siteConfig.features.keyboardShortcuts && (
+  <>
+    <!-- Trigger hint (shown in footer area) -->
+    <button
+      id="shortcuts-trigger"
+      class="shortcuts-trigger"
+      type="button"
+      aria-label="Open keyboard shortcuts"
+      title="Keyboard shortcuts"
+    >
+      <kbd>?</kbd>
+    </button>
+
+    <!-- Shortcuts modal -->
+    <div
+      id="shortcuts-modal"
+      class="shortcuts-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Keyboard shortcuts"
+      hidden
+    >
+      <div class="modal-backdrop" id="shortcuts-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Keyboard Shortcuts</h2>
+          <button
+            id="shortcuts-close"
+            class="modal-close"
+            type="button"
+            aria-label="Close keyboard shortcuts"
+          >
+            ✕
+          </button>
+        </div>
+        <dl class="shortcut-list">
+          {shortcuts.map(s => (
+            <>
+              <div class="shortcut-row">
+                <dt><kbd>{s.key}</kbd></dt>
+                <dd>{s.description}</dd>
+              </div>
+            </>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </>
+)}
+
+<style>
+  .shortcuts-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    padding: 0;
+    transition: color var(--duration-default);
+  }
+
+  .shortcuts-trigger:hover {
+    color: var(--color-text-primary);
+  }
+
+  .shortcuts-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .shortcuts-modal[hidden] {
+    display: none;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    cursor: pointer;
+  }
+
+  .modal-content {
+    position: relative;
+    z-index: 1;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .modal-title {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: var(--text-sm);
+    padding: 0.25rem;
+    transition: color var(--duration-default);
+  }
+
+  .modal-close:hover {
+    color: var(--color-text-primary);
+  }
+
+  .shortcut-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .shortcut-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .shortcut-row dt kbd {
+    min-width: 2rem;
+    text-align: center;
+  }
+
+  .shortcut-row dd {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+</style>
+
+{siteConfig.features.keyboardShortcuts && (
+  <script>
+    (function () {
+      const modal    = document.getElementById('shortcuts-modal');
+      const trigger  = document.getElementById('shortcuts-trigger');
+      const backdrop = document.getElementById('shortcuts-backdrop');
+      const closeBtn = document.getElementById('shortcuts-close');
+
+      function openModal() {
+        if (!modal) return;
+        modal.hidden = false;
+        closeBtn?.focus();
+      }
+
+      function closeModal() {
+        if (!modal) return;
+        modal.hidden = true;
+        trigger?.focus();
+      }
+
+      trigger?.addEventListener('click', openModal);
+      backdrop?.addEventListener('click', closeModal);
+      closeBtn?.addEventListener('click', closeModal);
+
+      document.addEventListener('keydown', (e) => {
+        // Don't fire shortcuts when typing in inputs
+        const tag = (e.target as HTMLElement).tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+        if (e.key === '?' && !e.shiftKey) {
+          e.preventDefault();
+          if (modal?.hidden === false) {
+            closeModal();
+          } else {
+            openModal();
+          }
+        }
+
+        if (e.key === 't' && !e.metaKey && !e.ctrlKey) {
+          // Delegate to ThemeToggle
+          const btn = document.getElementById('theme-toggle') as HTMLButtonElement | null;
+          btn?.click();
+        }
+
+        if (e.key === '/' && !e.metaKey && !e.ctrlKey) {
+          e.preventDefault();
+          const searchInput = document.querySelector<HTMLInputElement>('[data-pagefind-ui] input, #search-input');
+          if (searchInput) {
+            searchInput.focus();
+          }
+        }
+
+        if (e.key === 'Escape') {
+          if (modal?.hidden === false) closeModal();
+        }
+      });
+    })();
+  </script>
+)}

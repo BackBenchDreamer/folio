@@ -1,0 +1,137 @@
+---
+import { siteConfig } from '@/config/site.config';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  /** Set to false to hide header/footer (e.g. reading mode) */
+  showChrome?: boolean;
+}
+
+const {
+  title,
+  description = siteConfig.seo.description,
+  ogImage = siteConfig.seo.ogImage,
+  canonical,
+  showChrome = true,
+} = Astro.props;
+
+const pageTitle = title
+  ? siteConfig.seo.titleTemplate.replace('%s', title)
+  : siteConfig.seo.title;
+
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, siteConfig.siteUrl).toString();
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : new URL(ogImage, siteConfig.siteUrl).toString();
+
+// JSON-LD Person schema
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: siteConfig.fullName,
+  url: siteConfig.siteUrl,
+  jobTitle: siteConfig.role,
+  description: siteConfig.seo.description,
+  image: ogImageUrl,
+  sameAs: [
+    siteConfig.social.github,
+    siteConfig.social.linkedin,
+    siteConfig.social.x,
+  ].filter(Boolean),
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- ── Theme initialization (FOUC prevention) ──────────
+         Must be synchronous in <head> before any paint.
+         Reads localStorage first, falls back to system preference.
+    ─────────────────────────────────────────────────────── -->
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.dataset.theme = stored;
+            return;
+          }
+        } catch (e) {}
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
+      })();
+    </script>
+
+    <!-- ── Primary meta ───────────────────────────────────── -->
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- ── Font preloads ──────────────────────────────────── -->
+    <link
+      rel="preload"
+      href="/fonts/geist-sans/Geist-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+
+    <!-- ── OpenGraph ─────────────────────────────────────── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:site_name" content={siteConfig.displayName} />
+
+    <!-- ── Twitter Cards ─────────────────────────────────── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    {siteConfig.seo.twitterHandle && (
+      <meta name="twitter:site" content={siteConfig.seo.twitterHandle} />
+    )}
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- ── RSS feed ───────────────────────────────────────── -->
+    {siteConfig.features.rss && (
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={`${siteConfig.displayName} Blog`}
+        href="/rss.xml"
+      />
+    )}
+
+    <!-- ── Favicon ───────────────────────────────────────── -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- ── JSON-LD Person schema ─────────────────────────── -->
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLd)}
+    />
+  </head>
+  <body>
+    <!-- Skip to main content — keyboard accessibility -->
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    {showChrome && <Header />}
+
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+
+    {showChrome && <Footer />}
+  </body>
+</html>

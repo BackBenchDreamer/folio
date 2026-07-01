@@ -1,0 +1,295 @@
+---
+/**
+ * ArtCard.astro
+ * Gallery card for artwork.
+ * - Locally optimized thumbnail via <img> with explicit dimensions
+ * - Title overlay on hover
+ * - Medium badge
+ * - Optional Instagram outbound link (static href only — never a data source)
+ * - Lightbox: clicking opens full-size image via CSS :target trick
+ */
+interface Props {
+  title: string;
+  medium: string;
+  image: string;
+  description?: string;
+  instagramUrl?: string;
+}
+
+const { title, medium, image, description, instagramUrl } = Astro.props;
+
+const imgSrc = `/images/art/${image}`;
+// Unique id for CSS :target lightbox
+const lightboxId = `lb-${image.replace(/[^a-z0-9]/gi, '-')}`;
+---
+
+<!-- Card trigger -->
+<div class="art-card-wrapper">
+  <a href={`#${lightboxId}`} class="art-card" aria-label={`View ${title} — ${medium}`}>
+    <img
+      src={imgSrc}
+      alt={title}
+      loading="lazy"
+      width="400"
+      height="400"
+      class="art-thumb"
+    />
+    <div class="art-overlay" aria-hidden="true">
+      <span class="art-title">{title}</span>
+      <div class="art-footer">
+        <span class="art-medium">{medium}</span>
+        {instagramUrl && (
+          <span class="art-ig-hint" title="View on Instagram">IG</span>
+        )}
+      </div>
+    </div>
+  </a>
+
+  <!-- CSS :target lightbox -->
+  <div id={lightboxId} class="lightbox" role="dialog" aria-modal="true" aria-label={title}>
+    <a href="#" class="lightbox-backdrop" aria-label="Close" tabindex="0"></a>
+    <div class="lightbox-content">
+      <img
+        src={imgSrc}
+        alt={title}
+        loading="lazy"
+        class="lightbox-img"
+      />
+      <div class="lightbox-info">
+        <div class="lightbox-meta">
+          <span class="lightbox-title">{title}</span>
+          <span class="lightbox-medium">{medium}</span>
+          {description && (
+            <p class="lightbox-desc">{description}</p>
+          )}
+        </div>
+        <div class="lightbox-actions">
+          {instagramUrl && (
+            <a
+              href={instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="ig-link"
+              aria-label={`View ${title} on Instagram`}
+            >
+              View on Instagram ↗
+            </a>
+          )}
+          <a href="#" class="close-btn" aria-label="Close lightbox">
+            Close ✕
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .art-card-wrapper {
+    position: relative;
+  }
+
+  .art-card {
+    display: block;
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    text-decoration: none;
+    transition: border-color var(--duration-default);
+  }
+
+  .art-card:hover {
+    border-color: var(--color-text-muted);
+  }
+
+  .art-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity var(--duration-default);
+  }
+
+  .art-card:hover .art-thumb {
+    opacity: 0.85;
+  }
+
+  .art-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 0.75rem 0.75rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity var(--duration-default);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .art-card:hover .art-overlay {
+    opacity: 1;
+  }
+
+  .art-title {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: rgba(255,255,255,0.95);
+    line-height: var(--leading-tight);
+  }
+
+  .art-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .art-medium {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: rgba(255,255,255,0.55);
+    text-transform: capitalize;
+  }
+
+  .art-ig-hint {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* ── CSS :target lightbox ─────────────────────────────── */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .lightbox:target {
+    display: flex;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    cursor: pointer;
+  }
+
+  .lightbox-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: min(640px, 90vw);
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .lightbox-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    max-height: 65vh;
+  }
+
+  .lightbox-info {
+    padding: 1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .lightbox-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .lightbox-title {
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  .lightbox-medium {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-transform: capitalize;
+  }
+
+  .lightbox-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+    margin-top: 0.25rem;
+  }
+
+  .lightbox-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .ig-link {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-default);
+  }
+
+  .ig-link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .close-btn {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-default);
+    margin-left: auto;
+  }
+
+  .close-btn:hover {
+    color: var(--color-text-primary);
+  }
+
+  /* Respect reduced motion — skip overlay transition */
+  @media (prefers-reduced-motion: reduce) {
+    .art-card .art-overlay,
+    .art-card .art-thumb {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Keyboard Escape to close lightbox
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && window.location.hash.startsWith('#lb-')) {
+      history.pushState(null, '', window.location.pathname);
+      // Dispatch hashchange so :target updates
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    }
+  });
+</script>

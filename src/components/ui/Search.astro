@@ -1,0 +1,172 @@
+---
+/**
+ * Search.astro
+ * Pagefind-powered search trigger. The Pagefind UI bundle loads only when
+ * the user interacts with the search button (dynamic import at interaction time).
+ * Gated by siteConfig.features.search.
+ */
+import { siteConfig } from '@/config/site.config';
+---
+
+{siteConfig.features.search && (
+  <>
+    <button
+      id="search-trigger"
+      class="search-trigger"
+      type="button"
+      aria-label="Open search"
+      title="Search"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </button>
+
+    <!-- Search overlay container (Pagefind UI mounts here) -->
+    <div
+      id="search-overlay"
+      class="search-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search"
+      hidden
+    >
+      <div class="search-backdrop" id="search-backdrop"></div>
+      <div class="search-content">
+        <div id="pagefind-ui-container"></div>
+      </div>
+    </div>
+  </>
+)}
+
+<style>
+  .search-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: color var(--duration-default), border-color var(--duration-default);
+  }
+
+  .search-trigger:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-muted);
+  }
+
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 5rem 1.5rem 1.5rem;
+  }
+
+  .search-overlay[hidden] {
+    display: none;
+  }
+
+  .search-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    cursor: pointer;
+  }
+
+  .search-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 560px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  /* Pagefind UI token overrides */
+  :global(#pagefind-ui-container) {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--color-accent);
+    --pagefind-ui-text: var(--color-text-primary);
+    --pagefind-ui-background: var(--color-surface);
+    --pagefind-ui-border: var(--color-border);
+    --pagefind-ui-tag: var(--color-surface-raised);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 6px;
+    --pagefind-ui-font: var(--font-sans);
+  }
+</style>
+
+{siteConfig.features.search && (
+  <script>
+    (function () {
+      const trigger   = document.getElementById('search-trigger');
+      const overlay   = document.getElementById('search-overlay');
+      const backdrop  = document.getElementById('search-backdrop');
+      const container = document.getElementById('pagefind-ui-container');
+
+      let initialized = false;
+
+      async function initPagefind() {
+        if (initialized || !container) return;
+        initialized = true;
+        try {
+          // Dynamically import Pagefind UI — loads only on first interaction
+          const { PagefindUI } = await import('/pagefind/pagefind-ui.js' as any);
+          new PagefindUI({
+            element: '#pagefind-ui-container',
+            showSubResults: true,
+            resetStyles: false,
+          });
+        } catch {
+          container.innerHTML = '<p style="padding:1rem;color:var(--color-text-muted);font-size:0.875rem;">Search index not built yet. Run <code>npm run build</code> first.</p>';
+        }
+      }
+
+      function openSearch() {
+        if (!overlay) return;
+        overlay.hidden = false;
+        initPagefind();
+        setTimeout(() => {
+          const input = container?.querySelector<HTMLInputElement>('input');
+          input?.focus();
+        }, 100);
+      }
+
+      function closeSearch() {
+        if (!overlay) return;
+        overlay.hidden = true;
+        trigger?.focus();
+      }
+
+      trigger?.addEventListener('click', openSearch);
+      backdrop?.addEventListener('click', closeSearch);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !overlay?.hidden) {
+          closeSearch();
+        }
+      });
+    })();
+  </script>
+)}

@@ -1,0 +1,98 @@
+---
+import { skillGroups } from '@/config/skills';
+---
+
+<section class="skills section-spacing" aria-labelledby="skills-heading">
+  <div class="skills-inner">
+    <h2 id="skills-heading" class="section-heading">Skills</h2>
+
+    <div class="skills-grid">
+      {skillGroups.map(group => (
+        <div class="skill-group">
+          <h3 class="group-label">{group.category}</h3>
+          <ul class="skill-list" role="list">
+            {group.skills.map(skill => (
+              <li class="skill-item">
+                {skill.url ? (
+                  <a
+                    href={skill.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="skill-link"
+                  >
+                    {skill.name}
+                  </a>
+                ) : (
+                  <span class="skill-name">{skill.name}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .skills-inner {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-heading {
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2.5rem;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 2rem;
+  }
+
+  .group-label {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+
+  .skill-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    list-style: none;
+  }
+
+  .skill-item {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .skill-link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color var(--duration-default);
+  }
+
+  .skill-link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .skill-name {
+    color: var(--color-text-secondary);
+  }
+</style>

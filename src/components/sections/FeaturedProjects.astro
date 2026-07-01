@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectCard from '@/components/ui/ProjectCard.astro';
+
+const allProjects = await getCollection('projects', ({ data }) => !data.draft && data.featured);
+const sorted = allProjects.sort((a, b) => a.data.priority - b.data.priority);
+---
+
+<section class="featured-projects section-spacing" aria-labelledby="projects-heading">
+  <div class="projects-inner">
+    <div class="section-header">
+      <h2 id="projects-heading" class="section-heading">Selected Work</h2>
+      <a href="/projects" class="view-all" aria-label="View all projects">
+        View all →
+      </a>
+    </div>
+
+    <div class="projects-grid">
+      {sorted.map(project => (
+        <ProjectCard
+          title={project.data.title}
+          description={project.data.description}
+          variant={project.data.variant}
+          mediaType={project.data.mediaType}
+          thumbnail={project.data.thumbnail}
+          mediaSrc={project.data.mediaSrc}
+          stack={project.data.stack}
+          github={project.data.github}
+          demo={project.data.demo}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured-projects {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .projects-inner {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+  }
+
+  .section-heading {
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .view-all {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-default);
+  }
+
+  .view-all:hover {
+    color: var(--color-text-primary);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

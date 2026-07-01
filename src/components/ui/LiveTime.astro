@@ -1,0 +1,53 @@
+---
+/**
+ * LiveTime.astro
+ * Client island that renders the current local time in the configured timezone.
+ * Updates every second. Gated by siteConfig.features.liveTime.
+ */
+import { siteConfig } from '@/config/site.config';
+---
+
+{siteConfig.features.liveTime && (
+  <span id="live-time" class="live-time" aria-live="off" aria-label="Current local time">
+    <span id="live-time-value" class="time-value"></span>
+    <span class="time-tz">{siteConfig.timezone.split('/')[1]?.replace('_', ' ') ?? siteConfig.timezone}</span>
+  </span>
+)}
+
+<style>
+  .live-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .time-value {
+    color: var(--color-text-secondary);
+    letter-spacing: 0.03em;
+  }
+
+  .time-tz {
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script is:inline define:vars={{ timezone: siteConfig.timezone }}>
+  const el = document.getElementById('live-time-value');
+  if (el) {
+    function tick() {
+      const now = new Date();
+      el.textContent = now.toLocaleTimeString('en-US', {
+        timeZone: timezone,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      });
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+</script>

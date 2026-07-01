@@ -1,0 +1,239 @@
+---
+import { getCollection } from 'astro:content';
+
+const entries = await getCollection('experience');
+const sorted = entries.sort((a, b) => a.data.order - b.data.order);
+
+function formatDateRange(start: string, end: string | null | undefined): string {
+  if (!end) return `${start} — Present`;
+  return `${start} — ${end}`;
+}
+---
+
+<section class="experience section-spacing" aria-labelledby="experience-heading">
+  <div class="experience-inner">
+    <h2 id="experience-heading" class="section-heading">Experience</h2>
+
+    <div class="timeline" role="list">
+      {sorted.map((entry, i) => (
+        <article class="timeline-item" role="listitem">
+          <div class="timeline-marker" aria-hidden="true">
+            <span class="timeline-dot"></span>
+            {i < sorted.length - 1 && <span class="timeline-line"></span>}
+          </div>
+
+          <div class="timeline-content">
+            <div class="role-header">
+              <div class="role-title-group">
+                <h3 class="role-title">{entry.data.role}</h3>
+                <span class="role-company">
+                  {entry.data.link ? (
+                    <a
+                      href={entry.data.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="company-link"
+                    >
+                      {entry.data.company}
+                    </a>
+                  ) : (
+                    entry.data.company
+                  )}
+                </span>
+              </div>
+              <div class="role-meta">
+                <time class="role-dates" aria-label={`Duration: ${formatDateRange(entry.data.startDate, entry.data.endDate)}`}>
+                  {formatDateRange(entry.data.startDate, entry.data.endDate)}
+                </time>
+                <span class="role-location">{entry.data.location}</span>
+              </div>
+            </div>
+
+            {entry.data.achievements.length > 0 && (
+              <ul class="achievements" aria-label="Key achievements">
+                {entry.data.achievements.map(item => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            )}
+
+            {entry.data.technologies.length > 0 && (
+              <ul class="tech-list" role="list" aria-label="Technologies used">
+                {entry.data.technologies.map(tech => (
+                  <li class="tech-badge">{tech}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .experience-inner {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-heading {
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 3rem;
+  }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    gap: 1.5rem;
+  }
+
+  .timeline-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.35rem;
+  }
+
+  .timeline-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-border);
+    border: 1px solid var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .timeline-line {
+    flex: 1;
+    width: 1px;
+    background-color: var(--color-border);
+    margin: 0.375rem 0;
+    min-height: 1.5rem;
+  }
+
+  .timeline-content {
+    padding-bottom: 3rem;
+  }
+
+  .role-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .role-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .role-title {
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .role-company {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .company-link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color var(--duration-default);
+  }
+
+  .company-link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .role-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.125rem;
+    flex-shrink: 0;
+  }
+
+  .role-dates,
+  .role-location {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .achievements {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .achievements li {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .achievements li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--color-text-muted);
+  }
+
+  .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    list-style: none;
+  }
+
+  .tech-badge {
+    display: inline-block;
+    padding: 0.15em 0.55em;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+  }
+
+  @media (max-width: 640px) {
+    .role-header {
+      flex-direction: column;
+    }
+
+    .role-meta {
+      align-items: flex-start;
+    }
+  }
+</style>

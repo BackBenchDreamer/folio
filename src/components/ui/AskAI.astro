@@ -1,0 +1,71 @@
+---
+/**
+ * AskAI.astro
+ * Two small link buttons that open ChatGPT / Claude with a pre-filled prompt
+ * describing Jey V. Pure static outbound links — no API calls.
+ * Gated by siteConfig.features.askAI.
+ */
+import { siteConfig } from '@/config/site.config';
+
+const { askAI, features } = siteConfig;
+const encodedPrompt = encodeURIComponent(askAI.prompt);
+const chatgptHref = `${askAI.chatgptUrl}${encodedPrompt}`;
+const claudeHref  = `${askAI.claudeUrl}${encodedPrompt}`;
+---
+
+{features.askAI && (
+  <div class="ask-ai" role="group" aria-label="Ask AI about Jey V">
+    <span class="ask-ai-label">Ask about me:</span>
+    <a
+      href={chatgptHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="ask-btn"
+      aria-label="Ask ChatGPT about Jey V"
+    >
+      ChatGPT
+    </a>
+    <a
+      href={claudeHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="ask-btn"
+      aria-label="Ask Claude about Jey V"
+    >
+      Claude
+    </a>
+  </div>
+)}
+
+<style>
+  .ask-ai {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+  }
+
+  .ask-ai-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .ask-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25em 0.6em;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    transition: color var(--duration-default), border-color var(--duration-default);
+  }
+
+  .ask-btn:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,87 @@
+{
+  "$ref": "#/definitions/art",
+  "definitions": {
+    "art": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "medium": {
+          "type": "string",
+          "enum": [
+            "charcoal",
+            "digital",
+            "sketch",
+            "study",
+            "collection"
+          ]
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "integer",
+              "format": "unix-time"
+            }
+          ]
+        },
+        "image": {
+          "type": "string"
+        },
+        "featured": {
+          "type": "boolean",
+          "default": false
+        },
+        "order": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        },
+        "instagramUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "instagramId": {
+          "type": "string"
+        },
+        "syncedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "integer",
+              "format": "unix-time"
+            }
+          ]
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "medium",
+        "date",
+        "image",
+        "order"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

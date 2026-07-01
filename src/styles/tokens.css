@@ -1,0 +1,99 @@
+/* ============================================================
+   CSS DESIGN TOKENS
+   All visual decisions live here. Components consume these
+   variables — never raw hex values.
+   ============================================================ */
+
+/* ── Dark theme (primary) ─────────────────────────────────── */
+:root,
+[data-theme='dark'] {
+  /* Backgrounds */
+  --color-bg: #0a0a0a;
+  --color-surface: #111111;
+  --color-surface-raised: #1a1a1a;
+
+  /* Borders */
+  --color-border: #222222;
+  --color-border-subtle: #1a1a1a;
+
+  /* Text */
+  --color-text-primary: #efefef;
+  --color-text-secondary: #a0a0a0;
+  --color-text-muted: #555555;
+
+  /* Accent — single restrained color */
+  --color-accent: #e0e0e0;
+  --color-accent-hover: #ffffff;
+
+  /* Focus ring */
+  --color-focus: #4a9eff;
+
+  /* Code */
+  --color-code-bg: #161616;
+  --color-code-border: #252525;
+}
+
+/* ── Light theme ──────────────────────────────────────────── */
+[data-theme='light'] {
+  /* Backgrounds */
+  --color-bg: #fafaf8;
+  --color-surface: #f2f1ef;
+  --color-surface-raised: #eae9e6;
+
+  /* Borders */
+  --color-border: #d8d6d0;
+  --color-border-subtle: #e4e2dc;
+
+  /* Text */
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #555555;
+  --color-text-muted: #999999;
+
+  /* Accent */
+  --color-accent: #1a1a1a;
+  --color-accent-hover: #000000;
+
+  /* Focus ring */
+  --color-focus: #0066cc;
+
+  /* Code */
+  --color-code-bg: #eae9e6;
+  --color-code-border: #d8d6d0;
+}
+
+/* ── Typography scale ─────────────────────────────────────── */
+:root {
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  1.875rem;  /* 30px */
+  --text-4xl:  2.25rem;   /* 36px */
+  --text-5xl:  3rem;      /* 48px */
+
+  --leading-tight:  1.2;
+  --leading-snug:   1.375;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  /* Spacing rhythm */
+  --spacing-section: 6rem;
+  --spacing-section-sm: 4rem;
+
+  /* Border radius */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-card: 0.75rem;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --duration-default: 150ms;
+  --duration-slow:    300ms;
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+}

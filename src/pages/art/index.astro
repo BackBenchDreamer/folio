@@ -1,0 +1,154 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArtCard from '@/components/ui/ArtCard.astro';
+
+const allArt = await getCollection('art');
+const sorted = allArt.sort((a, b) => a.data.order - b.data.order);
+
+const mediums = ['all', ...new Set(sorted.map(a => a.data.medium))];
+---
+
+<BaseLayout
+  title="Art"
+  description="Artwork by Jeyadheep V — charcoal, digital, sketches, and studies."
+>
+  <div class="art-page section-spacing">
+    <div class="art-inner">
+      <header class="page-header">
+        <h1 class="page-title">Art</h1>
+        <p class="page-desc">
+          Charcoal, digital, and everything between.
+        </p>
+      </header>
+
+      <!-- Medium filter (JS-enhanced, works without JS via data attributes) -->
+      <div class="filter-bar" role="group" aria-label="Filter by medium">
+        {mediums.map(m => (
+          <button
+            class="filter-btn"
+            data-medium={m}
+            aria-pressed={m === 'all' ? 'true' : 'false'}
+            type="button"
+          >
+            {m.charAt(0).toUpperCase() + m.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      <div class="art-grid" id="art-gallery">
+        {sorted.map(item => (
+          <div data-medium={item.data.medium}>
+            <ArtCard
+              title={item.data.title}
+              medium={item.data.medium}
+              image={item.data.image}
+              description={item.data.description}
+              instagramUrl={item.data.instagramUrl}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .art-inner {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page-title {
+    font-size: clamp(var(--text-3xl), 6vw, var(--text-5xl));
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  .page-desc {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .filter-btn {
+    padding: 0.3em 0.75em;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: color var(--duration-default), border-color var(--duration-default),
+                background-color var(--duration-default);
+  }
+
+  .filter-btn:hover,
+  .filter-btn[aria-pressed='true'] {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-muted);
+    background-color: var(--color-surface);
+  }
+
+  .art-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .art-grid > [data-medium][hidden] {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .art-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .art-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Medium filter
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLElement>('#art-gallery > [data-medium]');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const selected = btn.dataset.medium ?? 'all';
+
+      // Update aria-pressed
+      filterBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+
+      // Show/hide items
+      items.forEach(item => {
+        if (selected === 'all' || item.dataset.medium === selected) {
+          item.hidden = false;
+        } else {
+          item.hidden = true;
+        }
+      });
+    });
+  });
+</script>

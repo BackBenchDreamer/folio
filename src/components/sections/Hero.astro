@@ -1,0 +1,240 @@
+---
+import { siteConfig } from '@/config/site.config';
+import LiveTime from '@/components/ui/LiveTime.astro';
+
+const availabilityDot = siteConfig.isAvailable ? 'dot-available' : 'dot-unavailable';
+---
+
+<section class="hero section-spacing" aria-labelledby="hero-name">
+  <div class="hero-inner">
+    <!-- Name -->
+    <h1 id="hero-name" class="hero-name">{siteConfig.displayName}</h1>
+
+    <!-- Role -->
+    <p class="hero-role">{siteConfig.role}</p>
+
+    <!-- Tagline -->
+    <p class="hero-tagline">{siteConfig.tagline}</p>
+
+    <!-- Intro -->
+    <p class="hero-intro">{siteConfig.intro}</p>
+
+    <!-- Meta row: availability, location, time -->
+    <div class="hero-meta">
+      <span class={`availability ${availabilityDot}`} aria-label="Availability status">
+        <span class="dot" aria-hidden="true"></span>
+        {siteConfig.availability}
+      </span>
+      <span class="meta-sep" aria-hidden="true">·</span>
+      <span class="hero-location">{siteConfig.location}</span>
+      <span class="meta-sep" aria-hidden="true">·</span>
+      <LiveTime />
+    </div>
+
+    <!-- Actions: social links + resume -->
+    <div class="hero-actions">
+      <div class="social-links">
+        <a
+          href={siteConfig.social.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link"
+          aria-label="GitHub"
+        >
+          GitHub
+        </a>
+        <a
+          href={siteConfig.social.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link"
+          aria-label="LinkedIn"
+        >
+          LinkedIn
+        </a>
+        <a
+          href={siteConfig.social.x}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link"
+          aria-label="X (Twitter)"
+        >
+          X
+        </a>
+        {siteConfig.social.instagram && (
+          <a
+            href={siteConfig.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-link"
+            aria-label="Instagram"
+          >
+            Instagram
+          </a>
+        )}
+      </div>
+
+      <a
+        href={siteConfig.social.resume}
+        class="resume-btn"
+        download
+        aria-label="Download resume"
+      >
+        Resume ↓
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-inner {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .hero-name {
+    font-size: clamp(var(--text-3xl), 8vw, var(--text-5xl));
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-role {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-tagline {
+    font-size: clamp(var(--text-lg), 2.5vw, var(--text-xl));
+    font-weight: 500;
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+    line-height: var(--leading-snug);
+    max-width: 36rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-intro {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 36rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: 2.5rem;
+  }
+
+  .availability {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-available .dot {
+    background-color: #4ade80;
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
+  }
+
+  .dot-unavailable .dot {
+    background-color: var(--color-text-muted);
+  }
+
+  .meta-sep {
+    color: var(--color-border);
+  }
+
+  .hero-location {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .social-links {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+  }
+
+  .social-link {
+    display: inline-block;
+    padding: 0.375rem 0.625rem;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: color var(--duration-default), background-color var(--duration-default);
+  }
+
+  .social-link:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface);
+  }
+
+  .resume-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition:
+      color var(--duration-default),
+      background-color var(--duration-default),
+      border-color var(--duration-default);
+  }
+
+  .resume-btn:hover {
+    background-color: var(--color-surface-raised);
+    border-color: var(--color-text-muted);
+    color: var(--color-text-primary);
+  }
+
+  @media (max-width: 640px) {
+    .hero-meta {
+      gap: 0.375rem;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+</style>
