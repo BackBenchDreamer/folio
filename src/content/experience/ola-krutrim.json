@@ -1,0 +1,15 @@
+{
+  "company": "Ola Krutrim",
+  "role": "Cloud Intern",
+  "startDate": "Dec 2025",
+  "endDate": "Feb 2026",
+  "location": "Bengaluru, India",
+  "technologies": ["Kubernetes", "Docker", "Python", "Linux"],
+  "achievements": [
+    "Deployed and monitored production AI inference workloads on Krutrim Cloud using Kubernetes-based infrastructure.",
+    "Containerised machine learning services and optimised deployment workflows for reproducibility across development and production environments.",
+    "Integrated model inference services with internal APIs and deployment pipelines, streamlining release and validation workflows."
+  ],
+  "link": "https://olakrutrim.com",
+  "order": 2
+}

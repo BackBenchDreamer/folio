@@ -90,13 +90,13 @@ export const siteConfig: SiteConfig = {
   displayName: 'Jey V',
   fullName: 'Jeyadheep V',
   role: 'Software Engineer · Builder · Artist',
-  location: 'India',
+  location: 'Bengaluru, India',
   timezone: 'Asia/Kolkata',
   tagline: 'Software. Sketchbooks. Side quests.',
   intro:
-    'I spend most weekends building software, experimenting with AI, sketching,' +
-    ' and chasing ideas that seem interesting enough to lose sleep over.',
-  availability: 'Usually building something. Occasionally outside touching grass.',
+    'I build things — AI pipelines, deployment platforms, weekend tools.' +
+    ' Also sketches. This is where the work lives.',
+  availability: 'Currently at IBM ISL. Building on weekends.',
   isAvailable: false,
   siteUrl: 'https://jeyv.in',
 

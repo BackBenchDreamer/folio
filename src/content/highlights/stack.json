@@ -1,0 +1,6 @@
+{
+  "label": "Primary stack",
+  "value": "Go · Python · K8s",
+  "description": "Backend systems, AI pipelines, and infrastructure — where most of the thinking happens.",
+  "order": 4
+}

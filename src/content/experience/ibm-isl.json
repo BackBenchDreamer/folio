@@ -1,0 +1,15 @@
+{
+  "company": "IBM ISL",
+  "role": "SDE Intern",
+  "startDate": "Feb 2026",
+  "endDate": null,
+  "location": "Bengaluru, India",
+  "technologies": ["Go", "Kubernetes", "Operator SDK", "Docker"],
+  "achievements": [
+    "Building a reusable Kubernetes deployment platform in Go using Operator SDK — evolving an internal automation framework into a service-agnostic solution for containerised microservices.",
+    "Built an automated pipeline that discovers services, generates Kubernetes Custom Resources, and provisions Deployments and Services through a custom Operator.",
+    "Designed hybrid configuration- and discovery-driven deployment workflows, reducing manual deployment effort by 40%."
+  ],
+  "link": "https://ibm.com",
+  "order": 1
+}

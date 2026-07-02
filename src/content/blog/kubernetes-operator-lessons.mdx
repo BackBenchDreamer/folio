@@ -1,0 +1,30 @@
+---
+title: "What I Learned Building a Kubernetes Operator in Go"
+description: "Notes from writing an Operator SDK-based deployment platform at IBM — the reconciliation model, the gotchas, and what I'd do differently."
+date: 2026-07-01
+tags: ["kubernetes", "go", "infrastructure", "internship"]
+draft: true
+tableOfContents: true
+---
+
+{/* TODO: Write this post. Outline is ready below — fill it in. */}
+
+## Why Operators are interesting
+
+Operators are just controllers — reconciliation loops that watch a resource and try to make reality match the spec. The concept is simple. The implementation surface is not.
+
+## The reconciliation model
+
+{/* Notes on the reconcile loop, requeueing, and why idempotency matters more than you think */}
+
+## Discovery-driven vs configuration-driven deployment
+
+{/* What the hybrid approach looked like in practice at IBM */}
+
+## What Operator SDK gives you (and what it doesn't)
+
+{/* Scaffolding, CRD generation, the parts you still wire manually */}
+
+## What I'd do differently
+
+{/* Cleaner status conditions, better error surfacing, test coverage from day one */}

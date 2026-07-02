@@ -1,37 +1,37 @@
 ---
 import { siteConfig } from '@/config/site.config';
 import LiveTime from '@/components/ui/LiveTime.astro';
-
-const availabilityDot = siteConfig.isAvailable ? 'dot-available' : 'dot-unavailable';
 ---
 
 <section class="hero section-spacing" aria-labelledby="hero-name">
   <div class="hero-inner">
+
     <!-- Name -->
     <h1 id="hero-name" class="hero-name">{siteConfig.displayName}</h1>
 
     <!-- Role -->
     <p class="hero-role">{siteConfig.role}</p>
 
-    <!-- Tagline -->
-    <p class="hero-tagline">{siteConfig.tagline}</p>
-
     <!-- Intro -->
     <p class="hero-intro">{siteConfig.intro}</p>
 
-    <!-- Meta row: availability, location, time -->
+    <!-- Section CTAs -->
+    <nav class="hero-nav" aria-label="Site sections">
+      <a href="/projects" class="hero-nav-link">Projects →</a>
+      <a href="/art"      class="hero-nav-link">Art →</a>
+      <a href="/blog"     class="hero-nav-link">Writing →</a>
+    </nav>
+
+    <!-- Meta row: location, time -->
     <div class="hero-meta">
-      <span class={`availability ${availabilityDot}`} aria-label="Availability status">
-        <span class="dot" aria-hidden="true"></span>
-        {siteConfig.availability}
-      </span>
-      <span class="meta-sep" aria-hidden="true">·</span>
       <span class="hero-location">{siteConfig.location}</span>
       <span class="meta-sep" aria-hidden="true">·</span>
       <LiveTime />
+      <span class="meta-sep" aria-hidden="true">·</span>
+      <span class="hero-status">{siteConfig.availability}</span>
     </div>
 
-    <!-- Actions: social links + resume -->
+    <!-- Social links + resume -->
     <div class="hero-actions">
       <div class="social-links">
         <a
@@ -40,27 +40,21 @@ const availabilityDot = siteConfig.isAvailable ? 'dot-available' : 'dot-unavaila
           rel="noopener noreferrer"
           class="social-link"
           aria-label="GitHub"
-        >
-          GitHub
-        </a>
+        >GitHub</a>
         <a
           href={siteConfig.social.linkedin}
           target="_blank"
           rel="noopener noreferrer"
           class="social-link"
           aria-label="LinkedIn"
-        >
-          LinkedIn
-        </a>
+        >LinkedIn</a>
         <a
           href={siteConfig.social.x}
           target="_blank"
           rel="noopener noreferrer"
           class="social-link"
-          aria-label="X (Twitter)"
-        >
-          X
-        </a>
+          aria-label="X"
+        >X</a>
         {siteConfig.social.instagram && (
           <a
             href={siteConfig.social.instagram}
@@ -68,21 +62,17 @@ const availabilityDot = siteConfig.isAvailable ? 'dot-available' : 'dot-unavaila
             rel="noopener noreferrer"
             class="social-link"
             aria-label="Instagram"
-          >
-            Instagram
-          </a>
+          >Instagram</a>
         )}
       </div>
-
       <a
         href={siteConfig.social.resume}
         class="resume-btn"
         download
         aria-label="Download resume"
-      >
-        Resume ↓
-      </a>
+      >Resume ↓</a>
     </div>
+
   </div>
 </section>
 
@@ -114,66 +104,65 @@ const availabilityDot = siteConfig.isAvailable ? 'dot-available' : 'dot-unavaila
     margin-bottom: 2rem;
   }
 
-  .hero-tagline {
-    font-size: clamp(var(--text-lg), 2.5vw, var(--text-xl));
-    font-weight: 500;
-    color: var(--color-text-primary);
-    letter-spacing: -0.01em;
-    line-height: var(--leading-snug);
-    max-width: 36rem;
-    margin-bottom: 1rem;
-  }
-
   .hero-intro {
-    font-size: var(--text-base);
+    font-size: clamp(var(--text-base), 2vw, var(--text-lg));
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
-    max-width: 36rem;
+    max-width: 34rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Section CTAs */
+  .hero-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.125rem;
     margin-bottom: 2.5rem;
   }
 
+  .hero-nav-link {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition:
+      color var(--duration-default) var(--easing-default),
+      border-color var(--duration-default) var(--easing-default),
+      background-color var(--duration-default) var(--easing-default);
+  }
+
+  .hero-nav-link:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-muted);
+    background-color: var(--color-surface);
+  }
+
+  /* Meta */
   .hero-meta {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
-  .availability {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .dot-available .dot {
-    background-color: #4ade80;
-    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
-  }
-
-  .dot-unavailable .dot {
-    background-color: var(--color-text-muted);
-  }
-
-  .meta-sep {
-    color: var(--color-border);
-  }
-
-  .hero-location {
+  .hero-location,
+  .hero-status {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-muted);
   }
 
+  .meta-sep {
+    color: var(--color-border);
+    font-size: var(--text-xs);
+  }
+
+  /* Actions */
   .hero-actions {
     display: flex;
     align-items: center;
@@ -223,7 +212,6 @@ const availabilityDot = siteConfig.isAvailable ? 'dot-available' : 'dot-unavaila
   .resume-btn:hover {
     background-color: var(--color-surface-raised);
     border-color: var(--color-text-muted);
-    color: var(--color-text-primary);
   }
 
   @media (max-width: 640px) {
@@ -235,6 +223,10 @@ const availabilityDot = siteConfig.isAvailable ? 'dot-available' : 'dot-unavaila
       flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
+    }
+
+    .hero-nav {
+      gap: 0.375rem;
     }
   }
 </style>

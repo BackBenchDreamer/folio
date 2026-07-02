@@ -1,0 +1,22 @@
+---
+title: "Cosmolux"
+description: "An interactive 3D solar system visualisation with real-time orbital simulation of planets and near-Earth objects."
+featured: true
+priority: 3
+category: "hybrid"
+stack: ["Three.js", "WebGL", "JavaScript"]
+thumbnail: "cosmolux-thumbnail.png"
+variant: "media"
+mediaType: "image"
+date: 2024-11-01
+draft: false
+github: "https://github.com/BackBenchDreamer/Cosmolux"
+---
+
+Built for the 2024 NASA Space Apps Challenge. The premise was simple: take orbital mechanics data and make it feel tangible in a browser.
+
+Three.js handles the rendering — planets, near-Earth objects, orbital paths — with enough performance tuning to keep the animation smooth across hardware. The mathematical modelling underneath is what made this interesting to build: translating Keplerian orbital elements into real-time 3D positions is a surprisingly elegant problem.
+
+This sits at the edge of my work — not pure engineering, not pure art, but somewhere between. It's a reminder that visual work and technical work are not that different when the problem is interesting enough.
+
+**What I'd improve next:** accurate scale (currently compressed for usability), and a way to query real NASA Horizons data at runtime instead of static snapshots.

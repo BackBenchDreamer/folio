@@ -152,22 +152,43 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"blog": {
-"notes-on-minimalism.mdx": {
-	id: "notes-on-minimalism.mdx";
-  slug: "notes-on-minimalism";
+"document-intelligence-lessons.mdx": {
+	id: "document-intelligence-lessons.mdx";
+  slug: "document-intelligence-lessons";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".mdx"] };
-"on-building-things-that-last.mdx": {
-	id: "on-building-things-that-last.mdx";
-  slug: "on-building-things-that-last";
+"kubernetes-operator-lessons.mdx": {
+	id: "kubernetes-operator-lessons.mdx";
+  slug: "kubernetes-operator-lessons";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".mdx"] };
+"the-workshop-habit.mdx": {
+	id: "the-workshop-habit.mdx";
+  slug: "the-workshop-habit";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".mdx"] };
 };
 "projects": {
+"adaptive-document-intelligence.mdx": {
+	id: "adaptive-document-intelligence.mdx";
+  slug: "adaptive-document-intelligence";
+  body: string;
+  collection: "projects";
+  data: InferEntrySchema<"projects">
+} & { render(): Render[".mdx"] };
+"cosmolux.mdx": {
+	id: "cosmolux.mdx";
+  slug: "cosmolux";
+  body: string;
+  collection: "projects";
+  data: InferEntrySchema<"projects">
+} & { render(): Render[".mdx"] };
 "folio.mdx": {
 	id: "folio.mdx";
   slug: "folio";
@@ -175,23 +196,9 @@ declare module 'astro:content' {
   collection: "projects";
   data: InferEntrySchema<"projects">
 } & { render(): Render[".mdx"] };
-"placeholder-alpha.mdx": {
-	id: "placeholder-alpha.mdx";
-  slug: "placeholder-alpha";
-  body: string;
-  collection: "projects";
-  data: InferEntrySchema<"projects">
-} & { render(): Render[".mdx"] };
-"side-quest-a.mdx": {
-	id: "side-quest-a.mdx";
-  slug: "side-quest-a";
-  body: string;
-  collection: "projects";
-  data: InferEntrySchema<"projects">
-} & { render(): Render[".mdx"] };
-"side-quest-b.mdx": {
-	id: "side-quest-b.mdx";
-  slug: "side-quest-b";
+"tax-buddy.mdx": {
+	id: "tax-buddy.mdx";
+  slug: "tax-buddy";
   body: string;
   collection: "projects";
   data: InferEntrySchema<"projects">
@@ -234,35 +241,35 @@ declare module 'astro:content' {
 };
 };
 "experience": {
-"current-role": {
-	id: "current-role";
+"ibm-isl": {
+	id: "ibm-isl";
   collection: "experience";
   data: InferEntrySchema<"experience">
 };
-"internship-one": {
-	id: "internship-one";
+"ola-krutrim": {
+	id: "ola-krutrim";
   collection: "experience";
   data: InferEntrySchema<"experience">
 };
 };
 "highlights": {
-"experience": {
-	id: "experience";
+"internships": {
+	id: "internships";
   collection: "highlights";
   data: InferEntrySchema<"highlights">
 };
-"impact": {
-	id: "impact";
+"shipped": {
+	id: "shipped";
   collection: "highlights";
   data: InferEntrySchema<"highlights">
 };
-"open-source": {
-	id: "open-source";
+"sketches": {
+	id: "sketches";
   collection: "highlights";
   data: InferEntrySchema<"highlights">
 };
-"projects": {
-	id: "projects";
+"stack": {
+	id: "stack";
   collection: "highlights";
   data: InferEntrySchema<"highlights">
 };
